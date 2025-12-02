@@ -1,6 +1,15 @@
 #include "functions.h"
 
+// Variables estáticas a nivel de archivo para mantener el estado
+// pero permitir su reinicio en cada lectura de fichero.
+static int state = 50;
+static int count = 0;
+
 int readFileContents(const std::string& filename) {
+  // Reiniciar el estado para cada nuevo fichero
+  state = 50;
+  count = 0;
+
   std::ifstream input(filename);
   if (!input.is_open()) {
     std::cerr << "Error al abrir el fichero: " << filename << std::endl;
@@ -12,27 +21,24 @@ int readFileContents(const std::string& filename) {
     interpretLine(line);
   }
   input.close();
-  return operateLine(0);
+  
+  return count; 
 }
 
 int interpretLine(const std::string& line) {
-  std::string sub = line.substr(1, 1);
+  std::string sub = line.substr(1,line.length() - 1);
   int value = std::stoi(sub);
 
+  // si es L se resta y si es R se suma
   if (line[0] == 'L') {
-    return operateLine(-value);
-  } else if (line[0] == 'R') {
-    return operateLine(value);
+    value = -value;
   }
-  return 0;
+  return operateLine(value);
 }
 
 int operateLine(int value) {
-  static int state = 50;
-  static int result;
-  static int count = 0;
-  result = (state += value) % 100;
-  if (result == 0) {
+  state = (state + value) % 100;
+  if (state == 0) {
     count ++;
   }
   return count;
