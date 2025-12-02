@@ -2,8 +2,8 @@
 
 // Variables estáticas a nivel de archivo para mantener el estado
 // pero permitir su reinicio en cada lectura de fichero.
-static int state = 50;
-static int count = 0;
+static int state;
+static int count;
 
 int readFileContents(const std::string& filename) {
   // Reiniciar el estado para cada nuevo fichero
@@ -37,9 +37,25 @@ int interpretLine(const std::string& line) {
 }
 
 int operateLine(int value) {
-  state = (state + value) % 100;
-  if (state == 0) {
-    count ++;
+  for (int i = 0; i < abs(value); i++) {
+    if (value > 0) {
+      state++;
+      if (state == 100) {
+        state = 0;
+      }
+      if (state == 0) {
+        count++;
+      }
+
+    } else {
+      state--;
+      if (state == 0) {
+        count++;
+      }
+      if (state == -1) {
+        state = 99;
+      }
+    }
   }
   return count;
 }
