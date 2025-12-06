@@ -33,16 +33,25 @@ std::vector<Range> readFile(const std::string& filename) {
   return ranges;
 }
 
+long long sumInvalidIDs(const std::vector<Range>& ranges) {
+  long long sumInvalidIDs = 0;
+  for (const auto& range : ranges) {
+    for (long long id = range.start; id <= range.end; ++id) {
+      // si la longitud del ID es par y 
+      // la primera mitad es igual a la segunda mitad es un ID invalido
+      if ((std::to_string(id).length() % 2 == 0) && 
+          (std::to_string(id).substr(0, std::to_string(id).length() / 2) == 
+           std::to_string(id).substr(std::to_string(id).length() / 2))) {
 
+        sumInvalidIDs += id;
+      }
+    }
+  }
+  return sumInvalidIDs;
+}
 
 
 int main() {
-  // std::cout << "Mostramos datos procesados del fichero:" << std::endl;
-  // std::vector<Range> ranges = readFile("input.txt");
-  // for (const auto& range : ranges) {
-  //   std::cout << "Rango: " << range.start <<  " " << range.end << std::endl;
-  // }
-
-  
+  std::cout <<"Total sum of invalid ids: " << sumInvalidIDs(readFile("input.txt")) << std::endl;
   return 0;
 }
